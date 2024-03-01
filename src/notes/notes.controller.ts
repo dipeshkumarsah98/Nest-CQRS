@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateNoteCommand } from './create-note.command';
-import { GetNotesQuery } from './get-notes.query';
+import { CreateNoteCommand } from './commands/create-note.command';
+import { GetNotesQuery } from './query/get-notes.query';
 
 @Controller('notes')
 export class NotesController {
@@ -15,11 +15,11 @@ export class NotesController {
     @Body() body: { title: string; content: string },
   ): Promise<any> {
     const { title, content } = body;
-    await this.commandBus.execute(new CreateNoteCommand(title, content));
+    return await this.commandBus.execute(new CreateNoteCommand(title, content));
   }
 
   @Get()
   async getNotes(): Promise<any> {
-    await this.qureyBus.execute(new GetNotesQuery());
+    return await this.qureyBus.execute(new GetNotesQuery());
   }
 }
